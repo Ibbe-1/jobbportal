@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface Job {
   job_id: string;
@@ -12,33 +11,48 @@ interface Job {
 }
 
 export default function JobsPage() {
-  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // Kolla om användaren är inloggad
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log("Jobs page - User check:", user);
+      console.log("Checking user auth...");
+      const { data: { user }, error } = await supabase.auth.getUser();
       
-      if (!user) {
-        console.log("No user found, redirecting to login");
-        router.push("/login");
-        return;
+      console.log("Auth check result:", { user, error });
+      
+      if (error) {
+        console.error("Auth error:", error);
       }
       
-      setUser(user);
+      if (user) {
+        console.log("User found:", user.email);
+        setUser(user);
+      } else {
+        console.log("No user - waiting for proxy redirect...");
+        // Proxy kommer redirecta, så vi väntar bara
+      }
+      
+      setAuthChecked(true);
     };
     
     checkUser();
-  }, [router]);
+  }, []);
 
   const fetchJobs = async () => {
+    if (!user) return;
+    
     setLoading(true);
     console.log("Fetching jobs...");
     
@@ -111,10 +125,20 @@ export default function JobsPage() {
     }
   }, [user]);
 
-  if (!user) {
+  // Vänta på att auth har kollats
+  if (!authChecked) {
     return (
       <div className="p-10 max-w-2xl mx-auto">
         <p>Kontrollerar inloggning...</p>
+      </div>
+    );
+  }
+
+  // Om ingen user efter auth check, proxy kommer redirecta
+  if (!user) {
+    return (
+      <div className="p-10 max-w-2xl mx-auto">
+        <p>Redirectar till login...</p>
       </div>
     );
   }
@@ -182,12 +206,6 @@ export default function JobsPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <button
-                  onClick={() => router.push(`/jobs/${job.job_id}`)}
-                  className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                >
-                  Visa
-                </button>
                 <button
                   onClick={() => handleDeleteJob(job.job_id)}
                   className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"

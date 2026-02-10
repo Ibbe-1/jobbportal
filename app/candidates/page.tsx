@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
 
 interface Job {
   job_id: string;
@@ -19,11 +18,11 @@ interface Candidate {
 }
 
 export default function CandidatesPage() {
-  const router = useRouter();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   
   // Filter states
   const [selectedJob, setSelectedJob] = useState<string>("all");
@@ -37,17 +36,21 @@ export default function CandidatesPage() {
     linkedin: "",
   });
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push("/login");
-        return;
+      if (user) {
+        setUser(user);
       }
-      setUser(user);
+      setAuthChecked(true);
     };
     checkUser();
-  }, [router]);
+  }, []);
 
   const fetchJobs = async () => {
     const { data, error } = await supabase
@@ -158,14 +161,21 @@ export default function CandidatesPage() {
     return job?.title || "Okänt jobb";
   };
 
+  if (!authChecked) {
+    return <div className="p-10">Kontrollerar inloggning...</div>;
+  }
+
   if (!user) {
-    return <div className="p-10">Laddar...</div>;
+    return <div className="p-10">Redirectar till login...</div>;
   }
 
   return (
     <div className="p-10 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Kandidater - Kanban</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Kandidater - Kanban</h1>
+          <p className="text-sm text-gray-500">Inloggad som: {user.email}</p>
+        </div>
         <button
           onClick={() => setShowForm(!showForm)}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
