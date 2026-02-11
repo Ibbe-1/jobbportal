@@ -183,7 +183,7 @@ export default function CandidatesPage() {
                 type="text"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all placeholder:text-slate-400"
                 placeholder="Sök kandidat..."
               />
             </div>
@@ -191,7 +191,7 @@ export default function CandidatesPage() {
             <select
               value={selectedJob}
               onChange={(e) => setSelectedJob(e.target.value)}
-              className="px-4 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all"
+              className="px-4 py-2 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
             >
               <option value="all">Alla jobb</option>
               {jobs.map(job => (
@@ -214,7 +214,7 @@ export default function CandidatesPage() {
                   type="text"
                   value={newCandidate.name}
                   onChange={(e) => setNewCandidate({...newCandidate, name: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:border-violet-500 transition-all outline-none placeholder:text-slate-400"
                   required
                 />
               </div>
@@ -223,7 +223,7 @@ export default function CandidatesPage() {
                 <select
                   value={newCandidate.job_id}
                   onChange={(e) => setNewCandidate({...newCandidate, job_id: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:border-violet-500 transition-all outline-none placeholder:text-slate-400"
                   required
                 >
                   <option value="">Välj jobb</option>
@@ -238,7 +238,7 @@ export default function CandidatesPage() {
                   type="url"
                   value={newCandidate.linkedin}
                   onChange={(e) => setNewCandidate({...newCandidate, linkedin: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:border-violet-500 transition-all outline-none placeholder:text-slate-400"
                   placeholder="https://linkedin.com/in/..."
                 />
               </div>
