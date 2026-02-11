@@ -111,7 +111,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none placeholder:text-gray-400"
                   placeholder="din@email.com"
                   required
                   disabled={loading}
@@ -133,7 +133,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none"
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-200 text-gray-900 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none placeholder:text-gray-400"
                   placeholder="••••••••"
                   required
                   disabled={loading}

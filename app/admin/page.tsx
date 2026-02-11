@@ -504,7 +504,7 @@ export default function AdminPage() {
                         type="email"
                         value={newUser.email}
                         onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                         required
                         disabled={creating}
                         placeholder="namn@example.com"
@@ -516,7 +516,7 @@ export default function AdminPage() {
                         type="password"
                         value={newUser.password}
                         onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                         required
                         disabled={creating}
                         minLength={6}
@@ -528,7 +528,7 @@ export default function AdminPage() {
                       <select
                         value={newUser.role}
                         onChange={(e) => setNewUser({...newUser, role: e.target.value as 'admin' | 'customer'})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                         disabled={creating}
                       >
                         <option value="customer">Kund</option>
@@ -628,7 +628,7 @@ export default function AdminPage() {
                       <select
                         value={newJob.user_id}
                         onChange={(e) => setNewJob({...newJob, user_id: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                         required
                       >
                         <option value="">Välj användare</option>
@@ -645,7 +645,7 @@ export default function AdminPage() {
                         type="text"
                         value={newJob.title}
                         onChange={(e) => setNewJob({...newJob, title: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                         required
                         placeholder="t.ex. Senior Developer"
                       />
@@ -656,7 +656,7 @@ export default function AdminPage() {
                     <textarea
                       value={newJob.description}
                       onChange={(e) => setNewJob({...newJob, description: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                      className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                       rows={4}
                       placeholder="Beskriv jobbet..."
                     />
@@ -738,7 +738,7 @@ export default function AdminPage() {
                       <select
                         value={newCandidate.job_id}
                         onChange={(e) => setNewCandidate({...newCandidate, job_id: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                         required
                       >
                         <option value="">Välj jobb</option>
@@ -755,7 +755,7 @@ export default function AdminPage() {
                         type="text"
                         value={newCandidate.name}
                         onChange={(e) => setNewCandidate({...newCandidate, name: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                         required
                         placeholder="Kandidatens namn"
                       />
@@ -766,7 +766,7 @@ export default function AdminPage() {
                         type="url"
                         value={newCandidate.linkedin}
                         onChange={(e) => setNewCandidate({...newCandidate, linkedin: e.target.value})}
-                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        className="w-full px-4 py-3 bg-white border-2 border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-400"
                         placeholder="https://linkedin.com/in/..."
                       />
                     </div>
