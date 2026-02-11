@@ -137,15 +137,15 @@ export default function CandidatesPage() {
   };
 
   if (!authChecked || !user) {
-    return <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+    return <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
       <div className="animate-pulse text-gray-600">Laddar...</div>
     </div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-lg border-b border-slate-200 sticky top-0 z-20">
+      <div className="bg-white/80 border-b border-slate-200 sticky top-0 z-20 backdrop-blur-lg bg-white/80">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
@@ -183,7 +183,7 @@ export default function CandidatesPage() {
                 type="text"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-slate-900 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all"
                 placeholder="Sök kandidat..."
               />
             </div>
@@ -191,7 +191,7 @@ export default function CandidatesPage() {
             <select
               value={selectedJob}
               onChange={(e) => setSelectedJob(e.target.value)}
-              className="px-4 py-2 text-slate-900 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all"
+              className="px-4 py-2 bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:bg-white transition-all"
             >
               <option value="all">Alla jobb</option>
               {jobs.map(job => (
@@ -214,8 +214,7 @@ export default function CandidatesPage() {
                   type="text"
                   value={newCandidate.name}
                   onChange={(e) => setNewCandidate({...newCandidate, name: e.target.value})}
-                  className="w-full px-4 py-3 text-slate-900 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none placeholder:text-slate-400"
-                  placeholder="T.ex. Anna Andersson"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
                   required
                 />
               </div>
@@ -224,12 +223,12 @@ export default function CandidatesPage() {
                 <select
                   value={newCandidate.job_id}
                   onChange={(e) => setNewCandidate({...newCandidate, job_id: e.target.value})}
-                  className="w-full px-4 py-3 text-slate-900 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
                   required
                 >
-                  <option value="" className="text-slate-400">Välj jobb</option>
+                  <option value="">Välj jobb</option>
                   {jobs.map(job => (
-                    <option key={job.job_id} value={job.job_id} className="text-slate-900">{job.title}</option>
+                    <option key={job.job_id} value={job.job_id}>{job.title}</option>
                   ))}
                 </select>
               </div>
@@ -239,7 +238,7 @@ export default function CandidatesPage() {
                   type="url"
                   value={newCandidate.linkedin}
                   onChange={(e) => setNewCandidate({...newCandidate, linkedin: e.target.value})}
-                  className="w-full px-4 py-3 text-slate-900 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none placeholder:text-slate-400"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-violet-500 focus:bg-white transition-all outline-none"
                   placeholder="https://linkedin.com/in/..."
                 />
               </div>
@@ -281,7 +280,7 @@ export default function CandidatesPage() {
                 </div>
               </div>
             </div>
-            <div className="space-y-3 min-h-50">
+            <div className="space-y-3 min-h-[200px]">
               {appliedCandidates.map((candidate, index) => (
                 <CandidateCard
                   key={candidate.candidate_id}
@@ -315,7 +314,7 @@ export default function CandidatesPage() {
                 </div>
               </div>
             </div>
-            <div className="space-y-3 min-h-50">
+            <div className="space-y-3 min-h-[200px]">
               {interviewCandidates.map((candidate, index) => (
                 <CandidateCard
                   key={candidate.candidate_id}
@@ -349,7 +348,7 @@ export default function CandidatesPage() {
                 </div>
               </div>
             </div>
-            <div className="space-y-3 min-h-50">
+            <div className="space-y-3 min-h-[200px]">
               {hiredCandidates.map((candidate, index) => (
                 <CandidateCard
                   key={candidate.candidate_id}
@@ -369,6 +368,8 @@ export default function CandidatesPage() {
           </div>
         </div>
       </div>
+
+
     </div>
   );
 }
@@ -451,6 +452,8 @@ function CandidateCard({
           </button>
         )}
       </div>
+
+
     </div>
   );
 }

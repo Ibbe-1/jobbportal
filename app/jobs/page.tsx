@@ -88,21 +88,21 @@ export default function JobsPage() {
   }, [user]);
 
   if (!authChecked) {
-    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+    return <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
       <div className="animate-pulse text-gray-600">Laddar...</div>
     </div>;
   }
 
   if (!user) {
-    return <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+    return <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center">
       <div>Redirectar...</div>
     </div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 backdrop-blur-lg bg-white/80">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ export default function JobsPage() {
             
             <button
               onClick={() => setShowForm(!showForm)}
-              className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 flex items-center gap-2"
+              className="px-5 py-2.5 bg-linear-to-br from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -145,7 +145,7 @@ export default function JobsPage() {
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-4 py-3 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none placeholder:text-gray-400"
+                    className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none"
                     placeholder="t.ex. Senior Backend Developer"
                     required
                   />
@@ -157,7 +157,7 @@ export default function JobsPage() {
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-3 text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none resize-none placeholder:text-gray-400"
+                    className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all duration-200 outline-none resize-none"
                     rows={4}
                     placeholder="Beskriv jobbet, krav, ansvarsområden..."
                   />
@@ -254,6 +254,8 @@ export default function JobsPage() {
           </div>
         )}
       </div>
+
+
     </div>
   );
 }
