@@ -81,7 +81,6 @@ export default function AdminPage() {
       return;
     }
 
-    // Kolla om användaren är admin
     const { data: profile } = await supabase
       .from("users")
       .select("role")
@@ -255,7 +254,7 @@ export default function AdminPage() {
     }
   };
 
-  // ==================== DELETE USER (UPDATED) ====================
+  // ==================== DELETE USER ====================
 
   const handleDeleteUser = async (userId: string, email: string) => {
     if (!confirm(`Är du säker på att du vill ta bort användaren ${email}? Detta tar även bort alla deras jobb och kandidater.`)) {
@@ -281,8 +280,8 @@ export default function AdminPage() {
 
       alert(`Användare ${email} borttagen helt!`);
       fetchUsers();
-      fetchJobs(); // Uppdatera jobs också
-      fetchCandidates(); // Uppdatera candidates också
+      fetchJobs();
+      fetchCandidates();
     } catch (error: any) {
       console.error('Error deleting user:', error);
       alert('Kunde inte ta bort användare: ' + error.message);
@@ -350,398 +349,499 @@ export default function AdminPage() {
   };
 
   if (!authChecked) {
-    return <div className="p-10">Kontrollerar behörighet...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600 font-medium">Kontrollerar behörighet...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!currentUser) {
-    return <div className="p-10">Laddar...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600 font-medium">Laddar...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-10 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">🔧 Admin Panel</h1>
-        <p className="text-gray-600">Inloggad som: <strong>{currentUser.email}</strong></p>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b">
-        <button
-          onClick={() => setActiveTab('users')}
-          className={`px-6 py-3 font-semibold ${
-            activeTab === 'users'
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          👥 Användare ({users.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('jobs')}
-          className={`px-6 py-3 font-semibold ${
-            activeTab === 'jobs'
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          💼 Jobb ({jobs.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('candidates')}
-          className={`px-6 py-3 font-semibold ${
-            activeTab === 'candidates'
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          📋 Kandidater ({candidates.length})
-        </button>
-      </div>
-
-      {/* Users Tab */}
-      {activeTab === 'users' && (
-        <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Hantera Användare</h2>
-            <button
-              onClick={() => setShowUserForm(!showUserForm)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white text-xl">⚙️</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  Admin Panel
+                </h1>
+                <p className="text-sm text-slate-500">Inloggad som <span className="font-medium text-slate-700">{currentUser.email}</span></p>
+              </div>
+            </div>
+            <a 
+              href="/dashboard" 
+              className="text-sm text-slate-600 hover:text-indigo-600 font-medium transition-colors flex items-center gap-2"
             >
-              {showUserForm ? 'Avbryt' : '+ Ny Användare'}
-            </button>
+              <span>←</span> Dashboard
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">Totalt Användare</p>
+                <p className="text-3xl font-bold text-slate-800">{users.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">👥</span>
+              </div>
+            </div>
           </div>
 
-          {showUserForm && (
-            <div className="bg-white p-6 rounded shadow mb-6">
-              <h3 className="font-bold text-lg mb-4">Skapa Ny Användare</h3>
-              <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Email *</label>
-                  <input
-                    type="email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                    disabled={creating}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Lösenord *</label>
-                  <input
-                    type="password"
-                    value={newUser.password}
-                    onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                    disabled={creating}
-                    minLength={6}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Roll *</label>
-                  <select
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({...newUser, role: e.target.value as 'admin' | 'customer'})}
-                    className="border w-full px-3 py-2 rounded"
-                    disabled={creating}
-                  >
-                    <option value="customer">Kund</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-                <div className="md:col-span-3">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">Aktiva Jobb</p>
+                <p className="text-3xl font-bold text-slate-800">{jobs.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">💼</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-500 text-sm font-medium mb-1">Kandidater</p>
+                <p className="text-3xl font-bold text-slate-800">{candidates.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">📋</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 mb-6 p-2">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'users'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="mr-2">👥</span>
+              Användare
+            </button>
+            <button
+              onClick={() => setActiveTab('jobs')}
+              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'jobs'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="mr-2">💼</span>
+              Jobb
+            </button>
+            <button
+              onClick={() => setActiveTab('candidates')}
+              className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === 'candidates'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
+                  : 'text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="mr-2">📋</span>
+              Kandidater
+            </button>
+          </div>
+        </div>
+
+        {/* Users Tab */}
+        {activeTab === 'users' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-slate-800">Hantera Användare</h2>
+              <button
+                onClick={() => setShowUserForm(!showUserForm)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-sm ${
+                  showUserForm
+                    ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700'
+                }`}
+              >
+                {showUserForm ? '✕ Avbryt' : '+ Ny Användare'}
+              </button>
+            </div>
+
+            {showUserForm && (
+              <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                <h3 className="font-bold text-xl mb-6 text-slate-800">Skapa Ny Användare</h3>
+                <form onSubmit={handleCreateUser} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Email *</label>
+                      <input
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        required
+                        disabled={creating}
+                        placeholder="namn@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Lösenord *</label>
+                      <input
+                        type="password"
+                        value={newUser.password}
+                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        required
+                        disabled={creating}
+                        minLength={6}
+                        placeholder="Minst 6 tecken"
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Roll *</label>
+                      <select
+                        value={newUser.role}
+                        onChange={(e) => setNewUser({...newUser, role: e.target.value as 'admin' | 'customer'})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        disabled={creating}
+                      >
+                        <option value="customer">Kund</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </div>
+                  </div>
                   <button
                     type="submit"
                     disabled={creating}
-                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:bg-blue-300"
+                    className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 disabled:from-slate-300 disabled:to-slate-400 transition-all shadow-sm"
                   >
                     {creating ? 'Skapar...' : 'Skapa Användare'}
                   </button>
-                </div>
-              </form>
-            </div>
-          )}
+                </form>
+              </div>
+            )}
 
-          <div className="bg-white rounded shadow overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Roll</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Skapad</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Åtgärder</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.user_id}>
-                    <td className="px-6 py-4">{user.email}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                        user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(user.created_at).toLocaleDateString('sv-SE')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleChangeRole(user.user_id, user.email, user.role === 'admin' ? 'customer' : 'admin')}
-                          className="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded hover:bg-yellow-200"
-                          disabled={deleting === user.user_id}
-                        >
-                          → {user.role === 'admin' ? 'Kund' : 'Admin'}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteUser(user.user_id, user.email)}
-                          disabled={deleting === user.user_id}
-                          className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 disabled:bg-red-50 disabled:text-red-400"
-                        >
-                          {deleting === user.user_id ? 'Tar bort...' : 'Ta bort'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Jobs Tab - samma som tidigare */}
-      {activeTab === 'jobs' && (
-        <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Hantera Jobb</h2>
-            <button
-              onClick={() => setShowJobForm(!showJobForm)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              {showJobForm ? 'Avbryt' : '+ Nytt Jobb'}
-            </button>
-          </div>
-
-          {showJobForm && (
-            <div className="bg-white p-6 rounded shadow mb-6">
-              <h3 className="font-bold text-lg mb-4">Skapa Nytt Jobb</h3>
-              <form onSubmit={handleCreateJob} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Användare *</label>
-                  <select
-                    value={newJob.user_id}
-                    onChange={(e) => setNewJob({...newJob, user_id: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                  >
-                    <option value="">Välj användare</option>
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Roll</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Skapad</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Åtgärder</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
                     {users.map((user) => (
-                      <option key={user.user_id} value={user.user_id}>
-                        {user.email} ({user.role})
-                      </option>
+                      <tr key={user.user_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4 text-slate-800 font-medium">{user.email}</td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            user.role === 'admin' 
+                              ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                              : 'bg-blue-100 text-blue-700 border border-blue-200'
+                          }`}>
+                            {user.role === 'admin' ? '⚡' : '👤'} {user.role}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-500">
+                          {new Date(user.created_at).toLocaleDateString('sv-SE')}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleChangeRole(user.user_id, user.email, user.role === 'admin' ? 'customer' : 'admin')}
+                              className="px-4 py-2 bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors text-sm font-medium border border-amber-200"
+                              disabled={deleting === user.user_id}
+                            >
+                              → {user.role === 'admin' ? 'Kund' : 'Admin'}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(user.user_id, user.email)}
+                              disabled={deleting === user.user_id}
+                              className="px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 disabled:bg-slate-50 disabled:text-slate-400 transition-colors text-sm font-medium border border-red-200"
+                            >
+                              {deleting === user.user_id ? 'Tar bort...' : '🗑️ Ta bort'}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
                     ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Titel *</label>
-                  <input
-                    type="text"
-                    value={newJob.title}
-                    onChange={(e) => setNewJob({...newJob, title: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block mb-1 text-sm font-semibold">Beskrivning</label>
-                  <textarea
-                    value={newJob.description}
-                    onChange={(e) => setNewJob({...newJob, description: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    rows={3}
-                  />
-                </div>
-                <div className="md:col-span-2">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Jobs Tab */}
+        {activeTab === 'jobs' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-slate-800">Hantera Jobb</h2>
+              <button
+                onClick={() => setShowJobForm(!showJobForm)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-sm ${
+                  showJobForm
+                    ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700'
+                }`}
+              >
+                {showJobForm ? '✕ Avbryt' : '+ Nytt Jobb'}
+              </button>
+            </div>
+
+            {showJobForm && (
+              <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                <h3 className="font-bold text-xl mb-6 text-slate-800">Skapa Nytt Jobb</h3>
+                <form onSubmit={handleCreateJob} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Användare *</label>
+                      <select
+                        value={newJob.user_id}
+                        onChange={(e) => setNewJob({...newJob, user_id: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        required
+                      >
+                        <option value="">Välj användare</option>
+                        {users.map((user) => (
+                          <option key={user.user_id} value={user.user_id}>
+                            {user.email} ({user.role})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Titel *</label>
+                      <input
+                        type="text"
+                        value={newJob.title}
+                        onChange={(e) => setNewJob({...newJob, title: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        required
+                        placeholder="t.ex. Senior Developer"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-slate-700">Beskrivning</label>
+                    <textarea
+                      value={newJob.description}
+                      onChange={(e) => setNewJob({...newJob, description: e.target.value})}
+                      className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                      rows={4}
+                      placeholder="Beskriv jobbet..."
+                    />
+                  </div>
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                    className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm"
                   >
                     Skapa Jobb
                   </button>
-                </div>
-              </form>
-            </div>
-          )}
+                </form>
+              </div>
+            )}
 
-          <div className="bg-white rounded shadow overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Titel</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Användare</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Beskrivning</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Skapad</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Åtgärder</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {jobs.map((job) => (
-                  <tr key={job.job_id}>
-                    <td className="px-6 py-4 font-semibold">{job.title}</td>
-                    <td className="px-6 py-4 text-sm">{job.user_email}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {job.description?.substring(0, 50)}
-                      {job.description && job.description.length > 50 ? '...' : ''}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(job.created_at).toLocaleDateString('sv-SE')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleDeleteJob(job.job_id)}
-                        className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
-                      >
-                        Ta bort
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* Candidates Tab - samma som tidigare */}
-      {activeTab === 'candidates' && (
-        <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Hantera Kandidater</h2>
-            <button
-              onClick={() => setShowCandidateForm(!showCandidateForm)}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              {showCandidateForm ? 'Avbryt' : '+ Ny Kandidat'}
-            </button>
-          </div>
-
-          {showCandidateForm && (
-            <div className="bg-white p-6 rounded shadow mb-6">
-              <h3 className="font-bold text-lg mb-4">Skapa Ny Kandidat</h3>
-              <form onSubmit={handleCreateCandidate} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Jobb *</label>
-                  <select
-                    value={newCandidate.job_id}
-                    onChange={(e) => setNewCandidate({...newCandidate, job_id: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                  >
-                    <option value="">Välj jobb</option>
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Titel</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Användare</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Beskrivning</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Skapad</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Åtgärder</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
                     {jobs.map((job) => (
-                      <option key={job.job_id} value={job.job_id}>
-                        {job.title} - {job.user_email}
-                      </option>
+                      <tr key={job.job_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4 font-semibold text-slate-800">{job.title}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600">{job.user_email}</td>
+                        <td className="px-6 py-4 text-sm text-slate-500 max-w-xs truncate">
+                          {job.description || '-'}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-500">
+                          {new Date(job.created_at).toLocaleDateString('sv-SE')}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleDeleteJob(job.job_id)}
+                            className="px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium border border-red-200"
+                          >
+                            🗑️ Ta bort
+                          </button>
+                        </td>
+                      </tr>
                     ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">Namn *</label>
-                  <input
-                    type="text"
-                    value={newCandidate.name}
-                    onChange={(e) => setNewCandidate({...newCandidate, name: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-semibold">LinkedIn</label>
-                  <input
-                    type="url"
-                    value={newCandidate.linkedin}
-                    onChange={(e) => setNewCandidate({...newCandidate, linkedin: e.target.value})}
-                    className="border w-full px-3 py-2 rounded"
-                    placeholder="https://linkedin.com/in/..."
-                  />
-                </div>
-                <div className="md:col-span-3">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Candidates Tab */}
+        {activeTab === 'candidates' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-slate-800">Hantera Kandidater</h2>
+              <button
+                onClick={() => setShowCandidateForm(!showCandidateForm)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all shadow-sm ${
+                  showCandidateForm
+                    ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700'
+                }`}
+              >
+                {showCandidateForm ? '✕ Avbryt' : '+ Ny Kandidat'}
+              </button>
+            </div>
+
+            {showCandidateForm && (
+              <div className="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                <h3 className="font-bold text-xl mb-6 text-slate-800">Skapa Ny Kandidat</h3>
+                <form onSubmit={handleCreateCandidate} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Jobb *</label>
+                      <select
+                        value={newCandidate.job_id}
+                        onChange={(e) => setNewCandidate({...newCandidate, job_id: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-slate-700"
+                        required
+                      >
+                        <option value="">Välj jobb</option>
+                        {jobs.map((job) => (
+                          <option key={job.job_id} value={job.job_id}>
+                            {job.title} - {job.user_email}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">Namn *</label>
+                      <input
+                        type="text"
+                        value={newCandidate.name}
+                        onChange={(e) => setNewCandidate({...newCandidate, name: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        required
+                        placeholder="Kandidatens namn"
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-semibold text-slate-700">LinkedIn</label>
+                      <input
+                        type="url"
+                        value={newCandidate.linkedin}
+                        onChange={(e) => setNewCandidate({...newCandidate, linkedin: e.target.value})}
+                        className="w-full px-4 py-3 border-2 border-slate-400 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:text-slate-500"
+                        placeholder="https://linkedin.com/in/..."
+                      />
+                    </div>
+                  </div>
                   <button
                     type="submit"
-                    className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                    className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm"
                   >
                     Skapa Kandidat
                   </button>
-                </div>
-              </form>
+                </form>
+              </div>
+            )}
+
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Namn</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Jobb</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Användare</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">LinkedIn</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Åtgärder</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {candidates.map((candidate) => (
+                      <tr key={candidate.candidate_id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4 font-semibold text-slate-800">{candidate.name}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600">{candidate.job_title}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600">{candidate.user_email}</td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                            candidate.status === 'applied' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
+                            candidate.status === 'interview' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
+                            'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                          }`}>
+                            {candidate.status === 'applied' && '📩'}
+                            {candidate.status === 'interview' && '💬'}
+                            {candidate.status === 'hired' && '✅'}
+                            {' '}{candidate.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          {candidate.linkedin ? (
+                            <a
+                              href={candidate.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-indigo-600 hover:text-indigo-700 font-medium text-sm transition-colors"
+                            >
+                              Visa profil →
+                            </a>
+                          ) : (
+                            <span className="text-slate-400 text-sm">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleDeleteCandidate(candidate.candidate_id)}
+                            className="px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium border border-red-200"
+                          >
+                            🗑️ Ta bort
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          )}
-
-          <div className="bg-white rounded shadow overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Namn</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jobb</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Användare</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">LinkedIn</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Åtgärder</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {candidates.map((candidate) => (
-                  <tr key={candidate.candidate_id}>
-                    <td className="px-6 py-4 font-semibold">{candidate.name}</td>
-                    <td className="px-6 py-4 text-sm">{candidate.job_title}</td>
-                    <td className="px-6 py-4 text-sm">{candidate.user_email}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                        candidate.status === 'applied' ? 'bg-gray-100 text-gray-800' :
-                        candidate.status === 'interview' ? 'bg-blue-100 text-blue-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        {candidate.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      {candidate.linkedin ? (
-                        <a
-                          href={candidate.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline text-xs"
-                        >
-                          Visa profil
-                        </a>
-                      ) : (
-                        <span className="text-gray-400 text-xs">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleDeleteCandidate(candidate.candidate_id)}
-                        className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200"
-                      >
-                        Ta bort
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
-        </div>
-      )}
-
-      <div className="mt-8">
-        <a href="/dashboard" className="text-blue-600 hover:underline">
-          ← Tillbaka till Dashboard
-        </a>
+        )}
       </div>
     </div>
   );
